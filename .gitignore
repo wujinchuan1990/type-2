@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# 系统文件
+.DS_Store
+.test-artifacts/
+
+# 运行时临时目录
+system/data/word-work/
+system/data/separations/
+system/data/separations-experimental/
+
+# 旧整库备份（98.5MB，接近GitHub单文件100MB上限，当前数据已在项目中）
+system/data/backups/

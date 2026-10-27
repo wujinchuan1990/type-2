@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>型式评价 · 报告工作台</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/downloads.js" defer></script>
+  <script src="/static/photos.js" defer></script>
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳至工作区</a>
+  <div id="feedback" class="feedback" role="status" aria-live="polite" aria-atomic="true">正在连接本机服务…</div>
+  <div id="app">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="型式评价报告工作台"><span class="brand-mark" aria-hidden="true">型</span><span>型式评价<span class="brand-sub">REPORT WORKBENCH</span></span></a>
+      <div class="local-badge"><span aria-hidden="true"></span> 本机工作空间 · 资料不外传</div>
+      <nav id="navigation" aria-label="报告制作步骤"></nav>
+      <div class="sidebar-note"><strong>真实记录，如实填写</strong><p>不代填实测数据，不默认判定通过。姓名录入不等于签字或批准。</p></div>
+      <div class="sidebar-footer">可编辑 Word 报告<br><span>原始素材保持只读</span></div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <div><span class="eyebrow">LOCAL / REPORT STUDIO</span><p id="save-state">新任务 · 尚未保存</p></div>
+        <div class="toolbar"><button type="button" id="version-notes" class="button quiet" aria-haspopup="dialog" aria-controls="version-dialog">版本说明</button><a class="button quiet" href="/separate" target="_blank" rel="noopener noreferrer">拆分报告（新标签页）</a><a class="button quiet" href="/separate-experimental" target="_blank" rel="noopener noreferrer">拆分报告（试验）</a><button type="button" id="recovery" class="button quiet">恢复暂存</button><button type="button" id="backups" class="button quiet">备份与校验</button><button type="button" id="new-task" class="button quiet">新建任务</button><button type="button" id="open-task" class="button secondary">打开任务</button><button type="button" id="save-task" class="button primary">保存任务</button></div>
+      </header>
+      <main id="main" tabindex="-1">
+        <section class="page-heading">
+          <div><p class="eyebrow">型式评价报告自动生成</p><h1 id="step-title">资料与任务</h1><p id="step-description" class="muted"></p></div>
+          <span class="step-indicator" id="step-indicator">01 / 07</span>
+        </section>
+        <div id="summary" class="summary" aria-label="当前报告概况"></div>
+        <div id="recovery-state" class="muted" role="status"></div>
+        <div id="catalog-warnings"></div>
+        <section id="panel" aria-labelledby="step-title"></section>
+        <footer class="step-footer"><button type="button" class="button secondary" id="previous-step">上一步</button><span>修改后请保存；旧导出不会自动更新。</span><button type="button" class="button primary" id="next-step">下一步</button></footer>
+      </main>
+    </div>
+  </div>
+  <dialog id="version-dialog" aria-labelledby="version-dialog-title">
+    <div class="dialog-heading"><h2 id="version-dialog-title">版本说明</h2><button type="button" id="close-version-dialog" class="button quiet" autofocus>关闭</button></div>
+    <p class="muted">当前程序版本：V1.1。版本说明随程序发布，按新到旧保留历次更新；不代表已有任务、历史报告或设备数据已自动迁移。</p>
+    <section aria-labelledby="release-v11">
+      <h3 id="release-v11">V1.1 · 2026-10-25</h3>
+      <ul>
+        <li>新增“版本说明”入口，可查看当前及历史版本的更新内容，不影响未保存的任务。</li>
+        <li>报告对象拆分为水表、流量计（气体）、流量计（液体）、燃气表四类；旧“流量计”兼容归入液体类，资料按类型隔离。</li>
+        <li>新增气体涡街、超声流量计的观察记录、项目一览表和试验结果素材；兼容液体素材目录名称。</li>
+        <li>气体流量计支持 Excel 原始记录、误差及重复性匹配、耐压工作压力回填、初始及复测大气压力识别，以及配套原始记录打印页。</li>
+        <li>气体流量计附件2沿用燃气表照片版式，两类照片数据保持隔离；配套原始记录不新增照片附件。</li>
+        <li>拆分结果表的序号、项目名称、技术要求按各列相邻相同文字合并，保留首格格式，不合并样机或实测结果。</li>
+        <li>统一三类试验拆分页眉的标题居中、编号右对齐及长编号避让；修复独立结果的设备、环境和人员页底异常分页。</li>
+        <li>试验结果的标题、开始及结束时间、数据记录，以及判定要求、结论、异常记录段落统一为1.5倍行距、段前段后0；同步规范源素材。</li>
+        <li>历史任务的素材引用迁移须逐行核对样机和技术要求，保留实测值、人工修改、来源及历史记录，不按名称猜配。</li>
+        <li>修复 Windows 云端备份及恢复校验未及时关闭 SQLite 连接造成的临时文件占用问题。</li>
+      </ul>
+      <p class="muted">已有导出不会自动改变。使用新的试验拆分规则前，请重新“保存检查”并导出；最终文档仍需人工审版，真实 Word 分页能力取决于运行环境。</p>
+    </section>
+    <section aria-labelledby="release-v10">
+      <h3 id="release-v10">V1.0 · 既有线上版本</h3>
+      <ul>
+        <li>支持水表、流量计、燃气表的任务管理、资料上传、样机对应、结果核对及 Word 报告生成。</li>
+        <li>提供普通及试验报告拆分、设备库、备份与校验、历史报告下载。</li>
+        <li>云端支持素材缓存及批量预加载、非阻塞素材和照片加载、首页合并加载与打开任务合并核对。</li>
+        <li>云端支持照片标准及高清优化、按需缩略图和下载校验；保留已有照片及历史报告。</li>
+      </ul>
+    </section>
+  </dialog>
+  <dialog id="task-dialog" aria-labelledby="task-dialog-title"><div class="dialog-heading"><h2 id="task-dialog-title">打开已保存任务</h2><button type="button" class="button quiet" id="close-dialog">关闭</button></div><p class="muted">已保存任务在本机服务；未保存草稿单独暂存在本机浏览器，不代替保存任务或备份。</p><div id="task-list"></div></dialog>
+  <noscript><p class="notice error">请启用 JavaScript 后使用工作台。所有资料仅发送给当前本机服务。</p></noscript>
+</body>
+</html>

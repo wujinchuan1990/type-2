@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>型式评价 · 拆分报告（试验）</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/separate-experimental.css">
+  <script src="/static/downloads.js" defer></script>
+  <script src="/static/separate-experimental.js" defer></script>
+</head>
+<body class="separate-page">
+  <a class="skip-link" href="#main">跳至拆分工作区</a>
+  <div id="feedback" class="feedback" role="status" aria-live="polite">正在读取独立试验任务…</div>
+  <header class="topbar">
+    <div><span class="eyebrow">LOCAL / EXPERIMENTAL EDITABLE WORD SPLIT</span><p>独立试验副本 · 不改变旧拆分、报告生成、素材库及历史任务</p></div>
+    <a href="/" target="_blank" rel="noopener noreferrer" class="button secondary">报告工作台（新标签页）</a>
+  </header>
+  <main id="main" tabindex="-1">
+    <section class="page-heading"><div><p class="eyebrow">资料只在本机处理</p><h1>拆分报告（试验）</h1><p class="muted">使用 Microsoft Word 真实分页，保留原生可编辑文字和表格，默认保留源列宽，可勾选统一结果表列宽。不降级为图片式 Word。</p></div></section>
+    <p class="notice">支持水表、流量计、燃气表的已识别原生表格；遇到不明确结构明确报错，不承诺任意表格均可转换。AAA、BBB、CCC等是占位型号，不是测量数据。观察顶部及项目记录中明确的“样机编号”列统一使用本方案A001、A002、B001等编号，一行一个；空编号格保留为空。有样机编号列时，项目在当前页放不下则优先整体移至新页，本身超过一页仍正常续写；＋栏叉号逐行跟随编号，空编号行不补叉号。<strong>每个生成的试验结果数据格全部清空</strong>；日期、人员、设备、环境、结论及其他未授权文字沿用原拆分保留，必须人工核对。观察技术要求、备注及原标记不清空。多行观察/多型号结果与报告生成端的兼容尚待后续适配，本轮不修改生成器；禁止写入生产 report model 目录。</p>
+    <section class="card" aria-labelledby="source-title">
+      <h2 id="source-title">1. 上传或恢复独立试验任务</h2>
+      <div class="grid">
+        <form id="upload-form">
+          <label class="field"><span class="field-label">可编辑源报告（.docx）</span><input id="source-file" type="file" accept=".docx" required></label>
+          <p class="muted">仅接收DOCX；不支持PDF、扫描件、旧版DOC。上传副本在本机异步分析，不修改原件。</p>
+          <button id="upload-button" type="submit" class="button primary">上传并分析</button>
+        </form>
+        <div><label class="field"><span class="field-label">本机试验历史（不混入旧任务）</span><select id="job-select"><option value="">正在读取…</option></select></label>
+          <div class="toolbar"><button id="open-job" type="button" class="button secondary">打开所选任务</button><button id="refresh-history" type="button" class="button quiet">刷新任务列表</button></div>
+          <p class="muted">编辑后请保存检查计划。已保存方案可从历史恢复；离开未保存页面时会提示。</p>
+        </div>
+      </div>
+    </section>
+    <section id="job-section" class="card" hidden>
+      <div class="card-heading"><h2 id="job-title"></h2><span id="job-status" class="pill"></span></div>
+      <p id="job-stage" role="status" aria-live="polite"></p><p id="job-error" class="notice error" role="alert" hidden></p><div id="job-warnings"></div>
+      <div class="toolbar"><button id="analyze-button" class="button secondary" type="button">重新分析（显式重试）</button><button id="poll-retry" class="button secondary" type="button" hidden>重新读取任务状态</button><a id="source-pdf" class="button quiet" target="_blank" rel="noopener noreferrer" hidden>打开原生PDF（新标签页）</a></div>
+    </section>
+    <section id="editor-section" class="card" hidden>
+      <h2>2. 每张卡片独立编辑范围、型号、台数和保存位置</h2>
+      <p class="notice">范围使用源报告物理页码。勾选的完整章节/项目才能输出；允许同一observe/results源范围复制多个不同方案。items不改内容、不重复输出。型号每组从001编号；结果可单独勾选实际参试编号，<strong>每个语义子项目/条件完整覆盖选中编号</strong>。取消整张卡片则完全不生成。流量计原顶部口径/准确度等级保留为未映射的源规格信息。</p>
+      <form id="plan-form" novalidate>
+        <fieldset id="plan-fields">
+          <legend class="visually-hidden">独立试验方案</legend>
+          <p class="field-label">根保存文件夹</p><p id="root-directory" class="directory-path">尚未选择</p>
+          <button id="root-picker" type="button" class="button secondary">选择根文件夹…</button>
+          <p class="muted">macOS原生目录选择器；默认根目录/category，每张卡片可指定独立目录。不会覆盖已有文件。</p>
+          <div id="parts"></div>
+          <div class="toolbar"><label class="field"><span class="field-label">新增卡片类别</span><select id="new-kind"><option value="result">试验结果</option><option value="observe">观察记录</option><option value="items">项目一览表</option></select></label><button id="add-part" type="button" class="button secondary">添加方案</button></div>
+        </fieldset>
+        <p id="dirty-status" role="status"></p><div id="validation-errors" class="notice error" role="alert" hidden></div>
+        <button id="plan-button" type="submit" class="button primary">保存并检查拆分计划</button>
+      </form>
+    </section>
+    <section id="preview-section" class="card" hidden>
+      <h2>物理页预览</h2>
+      <div class="toolbar page-controls"><button id="previous-page" type="button" class="button secondary">上一页</button><label class="field"><span class="field-label">物理页码</span><select id="preview-page"></select></label><button id="next-page" type="button" class="button secondary">下一页</button></div>
+      <div class="preview-grid"><figure><figcaption id="page-caption"></figcaption><a id="page-image-link" target="_blank" rel="noopener noreferrer"><img id="page-image" loading="lazy" alt=""></a><p id="image-error" class="notice error" hidden>缩略图不可用，请打开原生PDF核对。</p></figure><div><h3>此页识别文字</h3><pre id="page-text" tabindex="0"></pre></div></div>
+    </section>
+    <section id="plan-section" class="card" hidden>
+      <h2 id="plan-title">3. 核对最终计划并确认导出</h2>
+      <p>下面为后端校验后的源边界、型号、每组台数/编号、参试子集、文件名、路径及格式调整。修改任何设置即使旧计划失效。边界建议仅在明确确认后采用。</p>
+      <div id="plan-adjustments"></div><div id="plan-outputs" class="table-wrap"></div>
+      <label class="check"><input id="confirm-plan" type="checkbox"><span>已核对所有方案、参试编号、源边界和格式调整；同意实测结果格清空、其他原文保留，并了解报告端兼容尚待适配。</span></label>
+      <button id="export-button" type="button" class="button primary" disabled>确认并导出可编辑Word</button>
+    </section>
+    <section id="exports-section" class="card" hidden><h2>独立试验导出记录</h2><p class="muted">逐份核验，失败文件跳过，最后统一保存合格文件并列出失败原因。有明确子项目时，结果目录使用“序号.主项目—子项目”；同一片段多个子项目按原顺序列出，Word主项目及子项目分列保持不变。同表相邻同名同格式的主项目名称可跨序号纵向合并，不同序号和子项目分别保留，跨页独立续名。不自动更新旧导出文件。</p><div id="export-list"></div></section>
+    <footer class="muted">单份Word、结构、目录或重名核验失败不影响其他文件，问题文件不交付、不伪造成功；源报告或分页基准失效等任务级错误仍停止处理，不自动迁移生产数据。</footer>
+  </main>
+  <noscript><p class="notice error">请启用JavaScript。本页仅连接当前本机服务。</p></noscript>
+</body>
+</html>

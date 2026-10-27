@@ -1,0 +1,9 @@
+cd system
+..\runtime\python\python.exe -m run
+
+
+..\runtime\python\python.exe -m run --no-browser
+..\runtime\python\python.exe -m run --port 9000
+
+
+Get-CimInstance Win32_Process -Filter "Name='python.exe'" | Where-Object { $_.CommandLine -like "*-m run*" } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>型式评价 · 可编辑报告拆分</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/separate.css">
+  <script src="/static/downloads.js" defer></script>
+  <script src="/static/separate.js" defer></script>
+</head>
+<body class="separate-page">
+  <a class="skip-link" href="#main">跳至拆分工作区</a>
+  <div id="feedback" class="feedback" role="status" aria-live="polite" aria-atomic="true">正在读取本机拆分任务…</div>
+  <header class="topbar">
+    <div><span class="eyebrow">LOCAL / EDITABLE WORD SPLIT</span><p>独立拆分工作区 · 不影响报告制作页面的未保存内容</p></div>
+    <a href="/" target="_blank" rel="noopener noreferrer" class="button secondary">报告工作台（新标签页）</a>
+  </header>
+  <main id="main" tabindex="-1">
+    <section class="page-heading">
+      <div><p class="eyebrow">资料只在本机处理</p><h1>可编辑报告拆分</h1><p class="muted">使用 Microsoft Word 原生分页核对，保留可编辑文字与表格，不把页面转换成图片式 Word。</p></div>
+    </section>
+    <section class="card" aria-labelledby="source-title">
+      <h2 id="source-title">1. 上传或恢复任务</h2>
+      <div class="grid">
+        <form id="upload-form">
+          <label class="field" for="source-file"><span class="field-label">可编辑源报告（.docx）</span><input id="source-file" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required aria-describedby="upload-help"></label>
+          <p id="upload-help" class="muted">仅接收 DOCX；扫描图片、PDF 和旧版 DOC 不作为可编辑源文件。上传后在本机异步分析，原件不修改。</p>
+          <button id="upload-button" type="submit" class="button primary">上传并分析</button>
+        </form>
+        <div>
+          <label class="field" for="job-select"><span class="field-label">本机历史任务（刷新页面后可恢复）</span><select id="job-select"><option value="">正在读取…</option></select></label>
+          <div class="toolbar"><button id="open-job" type="button" class="button secondary">打开所选任务</button><button id="refresh-history" type="button" class="button quiet">刷新任务列表</button></div>
+          <p class="muted">编辑后请先“保存并检查拆分计划”。未经保存的改动在离开页面时会提示；已保存任务通过本机服务恢复。</p>
+        </div>
+      </div>
+    </section>
+    <section id="job-section" class="card" aria-labelledby="job-title" hidden>
+      <div class="card-heading"><h2 id="job-title">当前任务</h2><span id="job-status" class="pill"></span></div>
+      <p id="job-stage" role="status" aria-live="polite"></p>
+      <p id="job-error" class="notice error" role="alert" hidden></p>
+      <div id="job-warnings"></div>
+      <div class="toolbar"><button id="analyze-button" class="button secondary" type="button">开始分析</button><button id="poll-retry" class="button secondary" type="button" hidden>重新读取任务状态</button><a id="source-pdf" class="button quiet" target="_blank" rel="noopener noreferrer" hidden>打开原生 PDF（新标签页）</a></div>
+    </section>
+    <section id="editor-section" class="card" aria-labelledby="editor-title" hidden>
+      <h2 id="editor-title">2. 编辑拆分范围与保存位置</h2>
+      <p class="notice">页码是<strong>上传原报告的物理页码</strong>，用于选择提取范围。输出按系统报告规范统一排版，允许位置及页数变化，每份从第1页连续编号、总页数按实际重算；不再要求与原报告逐像素一致。原文字、数据及图片仍严格核对。每个试验项目单独一行；同一项目连续多页放在同一行。未勾选的行不导出。</p>
+      <form id="plan-form" novalidate>
+        <fieldset id="plan-fields">
+          <legend class="visually-hidden">拆分文件设置</legend>
+          <div class="grid">
+            <div>
+              <label class="field" for="model-count"><span class="field-label">型号数量</span><input id="model-count" type="number" min="1" step="1" required></label>
+              <p class="muted">改变数量仅更新未手动改名的标准建议文件名；项目一览表名称保持不变。所有输出名称均可单独编辑。</p>
+            </div>
+            <div>
+              <p class="field-label">根保存文件夹</p><p id="root-directory" class="directory-path">尚未选择</p>
+              <button id="root-picker" type="button" class="button secondary">选择根文件夹…</button>
+              <p class="muted">由 macOS 原生选择器选择。根目录下按类别自动建立子文件夹；单份文件可指定其他目录。取消选择不会改变原设置。</p>
+            </div>
+          </div>
+          <div id="parts"></div>
+          <div class="toolbar">
+            <label class="field" for="new-kind"><span class="field-label">新增行类别</span><select id="new-kind"><option value="result">试验结果</option><option value="observe">观察记录</option><option value="items">型式评价项目一览表</option></select></label>
+            <button id="add-part" type="button" class="button secondary">增加一份文件</button>
+          </div>
+        </fieldset>
+        <p id="dirty-status" role="status" aria-live="polite"></p>
+        <div id="validation-errors" class="notice error" role="alert" hidden></div>
+        <button id="plan-button" type="submit" class="button primary">保存并检查拆分计划</button>
+      </form>
+    </section>
+    <section id="preview-section" class="card" aria-labelledby="preview-title" hidden>
+      <h2 id="preview-title">物理页预览</h2>
+      <div class="toolbar page-controls">
+        <button id="previous-page" type="button" class="button secondary">上一页</button>
+        <label class="field" for="preview-page"><span class="field-label">物理页码</span><select id="preview-page"></select></label>
+        <button id="next-page" type="button" class="button secondary">下一页</button>
+      </div>
+      <div class="preview-grid"><figure><figcaption id="page-caption"></figcaption><a id="page-image-link" target="_blank" rel="noopener noreferrer"><img id="page-image" loading="lazy" alt=""></a><p id="image-error" class="notice error" hidden>此页缩略图不可用，请打开原生 PDF 核对；不会以空白图代替。</p></figure><div><h3>此页识别文字</h3><pre id="page-text" tabindex="0"></pre></div></div>
+    </section>
+    <section id="plan-section" class="card" aria-labelledby="plan-title" hidden>
+      <h2 id="plan-title">3. 核对最终计划并确认导出</h2>
+      <p>以下为服务器检查后的最终文件清单。边界调整目前仅是建议，不会自动修改上面的请求页码；只有确认后才按本清单导出。修改任意设置会使此计划失效。</p>
+      <div id="plan-adjustments"></div>
+      <div id="plan-outputs" class="table-wrap"></div>
+      <label class="check"><input id="confirm-plan" type="checkbox"><span>我已逐份核对最终文件名、物理页码、保存路径，以及全部边界调整建议，同意按此版本计划导出。</span></label>
+      <button id="export-button" type="button" class="button primary" disabled>确认并导出可编辑 Word</button>
+    </section>
+    <section id="exports-section" class="card" aria-labelledby="exports-title" hidden>
+      <h2 id="exports-title">导出记录</h2><p class="muted">这里只列出服务端返回的实际文件；历史文件不会随新的编辑自动更新。</p><div id="export-list"></div>
+    </section>
+    <footer class="muted">不会覆盖已有同名文件。目录权限、重名冲突或分页校验失败时会显示错误，请修正后重新检查；不降级为图片式导出。</footer>
+  </main>
+  <noscript><p class="notice error">请启用 JavaScript。所有上传与处理只连接当前本机服务。</p></noscript>
+</body>
+</html>

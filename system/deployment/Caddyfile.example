@@ -1,0 +1,12 @@
+https://{$REPORT_SITE_HOST} {
+    basic_auth {
+        {$REPORT_GATE_USER} {$REPORT_GATE_HASH}
+    }
+
+    reverse_proxy 127.0.0.1:8876 {
+        header_up X-Workbench-Proxy-Key {$REPORT_PROXY_KEY}
+        header_up -Authorization
+    }
+
+    header Strict-Transport-Security "max-age=31536000"
+}
